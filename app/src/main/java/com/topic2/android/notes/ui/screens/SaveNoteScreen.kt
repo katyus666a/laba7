@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
@@ -114,6 +116,43 @@ private fun SaveNoteTopAppBar(
             }
         }
     )
+}
+
+@Composable
+private fun SaveNoteContent(
+    note: NoteModel,
+    onNoteChange: (NoteModel) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        ContentTextField(
+            label = "Title",
+            text = note.title ,
+            onTextChange = { newTitle ->
+                onNoteChange.invoke(note.copy(title = newTitle))
+            }
+        )
+        ContentTextField(
+            modifier = Modifier
+                .heightIn(max = 240.dp)
+                .padding(top = 16.dp),
+            label = "Body",
+            text = note.content,
+            onTextChange = { newContent ->
+                onNoteChange.invoke(note.copy(content = newContent))
+
+            }
+        )
+        val canBeCheckedOff: Boolean = note.isCheckedOff != null
+
+        NoteCheckOption(
+            isChecked = canBeCheckedOff,
+            onCheckedChange = { canBeCheckedOffNewValue ->
+                val isCheckedOff: Boolean? = if (canBeCheckedOffNewValue) false else null
+                onNoteChange.invoke(note.copy(isCheckedOff = isCheckedOff))
+            }
+        )
+        PickedColor(color = note.color)
+    }
 }
 
 @Composable
@@ -266,6 +305,14 @@ fun SaveNoteTopAppBarPreview() {
     )
 }
 
+@Preview
+@Composable
+fun SaveNoteContentPreview() {
+    SaveNoteContent(
+        note = NoteModel(title = "Title", content = "content"),
+        onNoteChange = {}
+    )
+}
 @Preview
 @Composable
 fun ContentTextFieldPreview() {
