@@ -1,6 +1,7 @@
 package com.topic2.android.notes.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,6 +39,7 @@ fun Note(
             .fillMaxWidth()
             .heightIn(min = 64.dp)
             .background(Color.White, backgroundShape)
+            .clickable(onClick = { onNoteClick(note) })
     ) {
         NoteColor(
             modifier = Modifier
@@ -75,7 +77,10 @@ fun Note(
         if (note.isCheckedOff != null) {
             Checkbox(
                 checked = note.isCheckedOff,
-                onCheckedChange = {},
+                onCheckedChange = {isChecked ->
+                    val newNote =note.copy(isCheckedOff = isChecked)
+                    onNoteCheckedChange(newNote)
+                },
                 modifier = Modifier
                     .padding(16.dp)
                     .align(Alignment.CenterVertically)
@@ -85,6 +90,12 @@ fun Note(
 }
 @Preview
 @Composable
-private fun NotePreview() { Note()
-
+private fun NotePreview() {
+    Note(
+        note = NoteModel(
+            1,
+            "Заметка 1",
+            "Содержимое 1",
+            null)
+    )
 }
